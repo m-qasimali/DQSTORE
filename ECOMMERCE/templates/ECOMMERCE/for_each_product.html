@@ -1,0 +1,269 @@
+{% extends 'ECOMMERCE/base.html' %}
+{% load static %}
+{% load products_tags %}
+
+{% block title %}
+PRODUCTS | DQSTORE
+{% endblock title %}
+
+
+{% block links %}
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500&display=swap"
+      rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/index.css' %}">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/for_each_product.css' %}">
+<!--<link rel="stylesheet" href="{% static 'ECOMMERCE/searchbar.css' %}">-->
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+{% endblock links %}
+
+
+{% block content %}
+<!-- ------------ single products details -----------------  -->
+<div>.</div>
+<div class="container single-product">
+    <div class="row">
+        {% for p in product %}
+        <div class="col-5 offset-1">
+            {% for image in p|product_pics1 %}
+            <img src="{{ image.pic.url }}" width="100%" id="ProductImg">
+            {% endfor %}
+
+            <div class="small-img-row mt-2">
+                {% for image in p|product_pics4 %}
+                <div class="small-img-col">
+                    <img src="{{ image.pic.url }}" width="100%" class="small-img">
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-5 mt-2">
+            <p></p>
+            <h1>{{ p.product_name }}</h1>
+            <h4>{% cal_discount p.price p.discount as value %}{{ value|rupees }}</h4>
+            <form action="?product={{ p.id }}" method="POST">
+                {% csrf_token %}
+                <input type="number" id="quantity" {% if request.session.cart %} value="{{ p.id|get_quantity:request.session.cart }}" {% else %} value="1" {% endif %}  name="quantity" min="1" max="10">
+                <input type="hidden" id="p_id" value="{{ p.id }}" name="p_id">
+                {% for image in p.id|product_pics1 %}
+                <input type="submit" id="addtocart" onclick="toast('{{ image.pic.url }}')" class="btn w-50"
+                       value="Add To Cart">
+                {% endfor %}
+            </form>
+            <h3>Product Details <i class="fa fa-indent"></i></h3>
+            <br>
+            <p>{{ p.desc }}
+            </p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+
+<div class="container mb-5">
+    <div class="row">
+        <div class="col-sm-12 text-center pb-4 pt-4">
+            <h2 class="title">Similar Products</h2>
+        </div>
+    </div>
+    <div class="row">
+        {% for product in products %}
+        <div class="col-md-3 col-sm-6 mb-4">
+            <div class="product-grid">
+                <div class="product-image">
+                    <a href="#">
+                        {% for image in product|product_pics %}
+                        <img class="pic-{{ forloop.counter }}"
+                             src="{{ image.pic.url }}">
+                        {% endfor %}
+                    </a>
+                    <form>
+                            <input type="hidden" id="quantity{{ product.id }}" value="1" name="quantity{{ product.id }}" min="1" max="10">
+                            <input type="hidden" id="p_id{{ product.id }}" value="{{ product.id }}" name="p_id{{ product.id }}">
+                    </form>
+                    <ul class="social">
+                        <li><a href="{% url 'each_product' product.id %}" data-tip="Quick View"><i
+                                class="fa fa-search"></i></a></li>
+                        {% for image in product.id|product_pics1 %}
+                        <li><a id="addtocart{{ product.id }}" onclick="toast('{{ image.pic.url }}')" data-tip="Add to Cart"><i
+                                class="fa fa-shopping-cart"></i></a></li>
+                        {% endfor %}
+                    </ul>
+                    {% if product.sale %}
+                    <span class="product-new-label">Sale</span>
+                    {% endif %}
+                    <span class="product-discount-label">{{ product.discount }}%</span>
+                </div>
+                <ul class="rating">
+                    {% for i in "x"|rjust:product.ranking %}
+                    <li class="fa fa-star"></li>
+                    {% endfor %}
+                </ul>
+                <div class="product-content mb-5 mt-5">
+                    <h3 class="title"><a href="#">{{ product.product_name }}</a></h3>
+                    <div class="price">{% cal_discount product.price product.discount as value %}{{ value|rupees }}
+                        <span>{{ product.price|rupees }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-----------   TOASTER        ----------------->
+<div class="toast position-fixed" id="myToast" style="max-width: 130px; z-index: 200; top: 13vh; right: 5vw;"
+     role="alert" data-autohide="true" aria-atomic="true">
+    <div class="toast-header">
+        <strong class="me-auto text-danger">Added to cart</strong>
+    </div>
+    <div class="body">
+        <img src="" id="toast_image" class="rounded" alt="..." width="120px">
+    </div>
+</div>
+
+{% endblock content %}
+
+
+{% block js %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajaxy/1.6.1/scripts/jquery.ajaxy.min.js" integrity="sha512-bztGAvCE/3+a1Oh0gUro7BHukf6v7zpzrAb3ReWAVrt+bVNNphcl2tDTKCBr5zk7iEDmQ2Bv401fX3jeVXGIcA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+<script>
+  // -----------------------      Toaster    ---------------
+  function toast(url) {
+    var source_image = document.getElementById("toast_image").src=url;
+    var x=document.getElementById("myToast");
+    x.classList.add('show');
+    setTimeout(function(){x.classList.remove('show'); }, 2000);
+  }
+</script>
+
+<script type="text/javascript">
+    $('#addtocart').on('click',function(){
+        var vm=$(this);
+        var quantity=$('#quantity').val();
+        var product=$('#p_id').val();
+
+        $.ajax({
+            url:'/add_to_cart/',
+            data:{
+                'product': product,
+                'quantity': quantity
+            },
+            dataType: 'json',
+            beforeSend:function(){
+                vm.attr('disabled',true);
+            },
+            success:function(res){
+                    $('.load_cart').text(res.total_items);
+                vm.attr('disabled',false);
+            }
+        })
+    });
+
+    {% for product in products %}
+        $('#addtocart{{ product.id }}').on('click',function(){
+            var vm=$(this);
+            var quantity=$('#quantity{{ product.id }}').val();
+            var product=$('#p_id{{ product.id }}').val();
+
+            $.ajax({
+                url:'/add_to_cart/',
+                data:{
+                    'product': product,
+                    'quantity': quantity
+                },
+                dataType: 'json',
+                beforeSend:function(){
+                    vm.attr('disabled',true);
+                },
+                success:function(res){
+                    $('.load_cart').text(res.total_items);
+                    vm.attr('disabled',true);
+                }
+            })
+        });
+    {% endfor %}
+</script>
+<script type="text/javascript">
+      //for single slider
+$('.single-slider').slick({
+  dots: false,
+  infinite:false,
+  autoplaySpeed: 300,
+  slidesToShow: 4,
+  slidesToScroll: 1,
+  responsive: [
+    {
+      breakpoint: 1200,
+      settings: {
+        slidesToShow: 3,
+        slidesToScroll: 1,
+        infinite: true,
+        arrows: false,
+        dots: false
+      }
+    },
+    {
+      breakpoint: 991,
+      settings: {
+        slidesToShow: 2,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: false,
+        arrows: false
+      }
+    },
+    {
+      breakpoint: 576,
+      settings: {
+        slidesToShow: 1,
+        slidesToScroll: 1,
+        infinite: true,
+        dots: false,
+        arrows: false
+      }
+    }
+    // You can unslick at a given breakpoint now by adding:
+    // settings: "unslick"
+    // instead of a settings object
+  ]
+});
+
+</script>
+
+<!-- ------------ js for product gallery --------------  -->
+<script>
+    var ProductImg = document.getElementById("ProductImg");
+    var SmallImg = document.getElementsByClassName("small-img");
+
+    SmallImg[0].onclick = function() {
+        ProductImg.src = SmallImg[0].src;
+    }
+    SmallImg[1].onclick = function() {
+        ProductImg.src = SmallImg[1].src;
+    }
+    SmallImg[2].onclick = function() {
+        ProductImg.src = SmallImg[2].src;
+    }
+    SmallImg[3].onclick = function() {
+        ProductImg.src = SmallImg[3].src;
+    }
+
+</script>
+{% endblock js %}
+
+
+
+
+        {% for image in p.id|product_pics1 %}
+        <img src="" class="rounded" alt="..." width="110px">
+        {% endfor %}
+
+

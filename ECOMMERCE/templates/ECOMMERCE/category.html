@@ -1,0 +1,20 @@
+{% load static %}
+
+ <!-------------------- featured Category ---------------->
+<div class="container mt-5 mb-5">
+    <h2 class="title">Featured Categories</h2>
+    <div class="row mb-5">
+        {% for cat in category %}
+        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12 mb-4">
+            <div class="hovereffect">
+                <img class="img-responsive" src="{{ cat.picture.url }}" alt="">
+                <div class="overlay">
+                    <h2>{{ cat.category_name }}</h2>
+                    <a class="info" href="/products/?category={{ cat.id }}">View All</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+</div>

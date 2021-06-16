@@ -1,0 +1,139 @@
+{% extends 'ECOMMERCE/base.html' %}
+{% load static %}
+{% load products_tags %}
+
+{% block title %}
+CART | DQSTORE
+{% endblock title %}
+
+
+{% block links %}
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500&display=swap"
+      rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/index.css' %}">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/checkout.css' %}">
+<!--<link rel="stylesheet" href="{% static 'ECOMMERCE/searchbar.css' %}">-->
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+{% endblock links %}
+
+
+
+
+
+{% block content %}
+<div class="mt-5"><p>.</p></div>
+{% if messages %}
+    {%  for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          <strong>{{ request.user.first_name }} {{ request.user.last_name }} </strong>{{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<div class="container checkout mt-5 p-3 rounded cart">
+    <table id="cart" class="table table-hover table-condensed">
+        <thead>
+            <tr>
+                <th style="width:50%; padding-left:100px;">Products</th>
+                <th style="width:10%">Price</th>
+                <th style="width:8%">Quantity</th>
+                <th style="width:22%" class="text-center">Subtotal</th>
+                <th style="width:22%" class="text-center">Remove</th>
+                <th style="width:10%"></th>
+            </tr>
+        </thead>
+        <tbody>
+        {% if request.session.cart %}
+            {% for product in products %}
+            <tr>
+                <td data-th="Product">
+                    <div class="row">
+                        {% for image in product.id|product_pics1 %}
+                        <a href="{% url 'each_product' product.id %}"><div class="col-sm-2 hidden-xs"><img src="{{ image.pic.url }}" width="70px"  alt="..." class="img-responsive"/></div></a>
+                        {% endfor %}
+                        <div class="col">
+                            <h6 class="nomargin">{{ product.product_name }}</h6>
+                        </div>
+                    </div>
+                </td>
+                <td data-th="Price">{% cal_discount product.price product.discount as value %}{{ value|rupees }}</td>
+                <td data-th="Quantity">
+                    <p class="d-block text-center">{% quantity_func request.session.cart product.id as quantity %}{{ quantity }}</p>
+                </td>
+                <td data-th="Subtotal" class="text-center">{% subtotal_func value quantity as subtotal %}{{ subtotal|rupees }}</td>
+                <td class="actions" data-th="">
+                    <a class="btn btn-danger btn-sm" href=".?delete={{ product.id }}" style="padding-left:50px;padding-right:50px;"><i class="fas fa-trash"></i></a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+        <tfoot>
+            <tr>
+                <td><a href="{% url 'products' %}" class="btn btn-warning mt-5"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                <td colspan="2" class="hidden-xs"></td>
+                <td class="hidden-xs text-center">Total: &nbsp;<strong class="mt-5"><u>{% total request as total_bill %}{{ total_bill|rupees }}</u></strong></td>
+                <td colspan="2"><a {% if request.user.is_authenticated %} href=".?bill={{ total_bill }}"{% else %} href="{% url 'login' 1 %}" {% endif %} class="btn btn-success mt-5">Checkout <i class="fa fa-angle-right"></i></a></td>
+            </tr>
+        {% else %}
+
+            <tr>
+                <td colspan="1" class="hidden-xs"></td>
+                <td  colspan="4"><h1 class="mt-5">No Result Found</h1></td>
+            </tr>
+            <tr>
+                <td><a href="{% url 'products' %}" class="btn btn-warning mt-5"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+                <td colspan="5" class="hidden-xs"></td>
+            </tr>
+        {% endif %}
+        </tfoot>
+    </table>
+</div>
+
+
+
+
+{% endblock content %}
+
+
+{% block js %}
+<script type='text/javascript' src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+<script type='text/javascript' src='https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js'></script>
+<script type='text/javascript' src='https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js'></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+
+{% if order is not None %}
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        var options = {
+        "key": "rzp_test_d11R3il8EkhdqE",
+        "currency": "PKR",
+        "name": "DQSTORE",
+        "description": "Bill Payment",
+        "image": "{% static 'ECOMMERCE/images/waheed.png' %}",
+        "order_id": "{{ order.id }}",
+        "callback_url": "{% url 'verify_payment' %}",
+        "prefill": {
+            "name": "{{ request.user.first_name }}",
+            "email": "{{ request.user.email }}",
+            "contact": "{{ request.user.phone_number }}"
+        },
+        "notes": {
+            "address": "Razorpay Corporate Office"
+        },
+        "theme": {
+            "color": "#3399cc"
+        }
+    };
+    var rzp1 = new Razorpay(options);
+        rzp1.open();
+    </script>
+    {% endif %}
+
+{% endblock js %}

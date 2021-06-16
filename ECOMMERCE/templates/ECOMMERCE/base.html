@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>
+        {% block title %}
+        {% endblock title %}
+    </title>
+    <link rel="shortcut icon" href="{% static 'ECOMMERCE/images/favicon.png' %}" type="image">
+    {% block links %}
+<!--    CSS LINKS-->
+    {% endblock links %}
+</head>
+<body>
+<!-- header section start -->
+<div class="header">
+{% include 'ECOMMERCE/navbar.html' %}
+    {% block header %}
+    {% endblock header %}
+</div>
+
+{% block content %}
+            <!--PAGE CONTENT-->
+{% endblock content %}
+
+
+{% include 'ECOMMERCE/footer.html' %}
+
+
+{% block js %}
+            <!--JavaScript files-->
+{% endblock js %}
+{% block backbtn %}
+
+<script>
+    window.addEventListener( "pageshow", function ( event ) {
+      var historyTraversal = event.persisted ||
+                             ( typeof window.performance != "undefined" &&
+                                  window.performance.navigation.type === 2 );
+      if ( historyTraversal ) {
+        // Handle page restore.
+        window.location.reload();
+      }
+    });
+</script>
+
+{% endblock backbtn %}
+</body>
+</html>

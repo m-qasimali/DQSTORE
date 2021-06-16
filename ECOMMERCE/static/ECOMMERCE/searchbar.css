@@ -1,0 +1,16 @@
+.btn-search{
+    padding: 5px 10px;
+    background:#8EC5FC;
+    color:#fff;
+    border-radius: 5px 5px;
+    outline:0px;
+    border:2px solid #fff;
+}
+
+.btn-search:hover{
+    background:transparent;
+}
+
+.form-select:focus{
+    outline:0px;
+}

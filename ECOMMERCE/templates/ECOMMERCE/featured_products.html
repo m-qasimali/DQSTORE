@@ -1,0 +1,68 @@
+{% load static %}
+{% load products_tags %}
+
+<!--------------    Featured products       ------------------->
+
+<!---------------------- PRODUCTS -------------------->
+<div class="position-fixed bottom-0 end-0 p-3" style="z-index: 5">
+  <div id="liveToast" class="toast hide" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="toast-header">
+      <img src="..." class="rounded me-2" alt="...">
+      <strong class="me-auto">Bootstrap</strong>
+      <small>11 mins ago</small>
+      <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    <div class="toast-body">
+      Hello, world! This is a toast message.
+    </div>
+  </div>
+</div>
+    <h2 class="title">Featured Products</h2>
+    <div class="container">
+            <div class="row">
+        {% for product in products %}
+            <div class="col-md-3 col-sm-6 mb-4">
+                <div class="product-grid">
+                    <div class="product-image">
+                    <a href="#">
+                        {% for image in product|product_pics %}
+                        <img class="pic-{{ forloop.counter }}"
+                             src="{{ image.pic.url }}">
+                        {% endfor %}
+                    </a>
+                                        <form>
+                        <input type="hidden" id="quantity{{ product.id }}" value="1" name="quantity{{ product.id }}"
+                               min="1" max="10">
+                        <input type="hidden" id="p_id{{ product.id }}" value="{{ product.id }}"
+                               name="p_id{{ product.id }}">
+                    </form>
+                    <ul class="social">
+                        <li><a href="{% url 'each_product' product.id %}" data-tip="Quick View"><i
+                                class="fa fa-search"></i></a></li>
+                        {% for image in product.id|product_pics1 %}
+                        <li><a id="addtocart{{ product.id }}" onclick="toast('{{ image.pic.url }}')"
+                               data-tip="Add to Cart"><i
+                                class="fa fa-shopping-cart"></i></a></li>
+                        {% endfor %}
+                    </ul>
+                        {% if product.sale %}
+                            <span class="product-new-label">Sale</span>
+                        {% endif %}
+                    <span class="product-discount-label">{{ product.discount }}%</span>
+                </div>
+                <ul class="rating">
+                    {% for i in "x"|rjust:product.ranking %}
+                        <li class="fa fa-star"></li>
+                    {% endfor %}
+                </ul>
+                 <div class="product-content mb-5 mt-5">
+                    <h3 class="title"><a href="#">{{ product.product_name }}</a></h3>
+                    <div class="price">{% cal_discount product.price product.discount as value %}{{ value|rupees }}
+                        <span>{{ product.price|rupees }}</span>
+                    </div>
+                </div>
+                </div>
+            </div>
+        {%  endfor %}
+    </div>
+    </div>

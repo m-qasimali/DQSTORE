@@ -1,0 +1,86 @@
+{% extends 'ECOMMERCE/base.html' %}
+{% load static %}
+
+{% block title %}
+CONTACTUS | DQSTORE
+{% endblock title %}
+
+
+
+{% block links %}
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500&display=swap"
+      rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,300;1,400;1,500&display=swap"
+      rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/css/bootstrap.min.css" rel="stylesheet"
+      integrity="sha384-+0n0xVW2eSR5OomGNYDnhzAbDsOXxcvSN1TPprVMTNDbiYZCxYbOOl7+AMvyTG2x" crossorigin="anonymous">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/index.css' %}">
+<link rel="stylesheet" href="{% static 'ECOMMERCE/contact_form.css' %}">
+<!--<link rel="stylesheet" href="{% static 'ECOMMERCE/searchbar.css' %}">-->
+
+<!-- FONT AWESOME -->
+<link rel="stylesheet" href="https://pro.fontawesome.com/releases/v5.10.0/css/all.css"
+      integrity="sha384-AYmEC3Yw5cVb3ZcuHtOA93w35dYTsvhLPVnYs9eStHfGJvOvKxVfELGroGkvsg+p" crossorigin="anonymous"/>
+{% endblock links %}
+
+
+
+{% block content %}
+
+<style>
+    .resize{
+    resize:none;}
+
+</style>
+    {% if messages %}
+        {% for message in messages %}
+            <div class="mt-5">.</div>
+            <div class="alert alert-warning mt-5 alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+<div class="mt-5">.</div>
+<div class="container mb-5 mt-5">
+    <div class="row">
+        <div class="col-md-3 col-3 part-1">
+            <div class="contact-info">
+                <img src="https://image.ibb.co/kUASdV/contact-image.png" alt="image"/>
+                <h2>Contact Us</h2>
+                <h4>We would love to hear from you !</h4>
+            </div>
+        </div>
+        <div class="col-md-9 col-9">
+
+            <form action="#" method="POST">
+                {% csrf_token %}
+                <div class="contact-form">
+                    {% for field in form %}
+                    <div class="form-group mt-3">
+                        <div class="col-lg-10">
+                            {{ field }}
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+                <div class="col-12 mt-3">
+                    <input class="btn btn-primary" type="submit">
+                </div>
+            </form>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+
+
+{% block js %}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-gtEjrD/SeCtmISkJkNUaaKMoLD0//ElJ19smozuHV6z3Iehds+3Ulb9Bn9Plx0x4" crossorigin="anonymous"></script>
+{% endblock js %}
+

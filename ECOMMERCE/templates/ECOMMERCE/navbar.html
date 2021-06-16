@@ -1,0 +1,28 @@
+{% load static %}
+<style>
+    .cart{
+        top: -12px;
+        left: 3px;
+    }
+
+</style>
+<div class="navbar sticky">
+      <div class="container">
+            <div class="logo">
+                <a href="index.html"><img src="{% static 'ECOMMERCE/images/Qasim1.png' %}" width="125px" height="42px"></a>
+            </div>
+            <nav>
+                <ul id="MenuItems">
+                    <li><a href="{% url 'home' %}">Home</a></li>
+                    <li><a href="{% url 'products' %}">Products</a></li>
+                    <li><a href="{% url 'contactus' %}">Contact</a></li>
+                    <li><a href="{% url 'registration' %}">Account</a></li>
+                    {% if request.user.is_authenticated %}<li><a href="{% url 'logout' %}">Logout</a></li>{% endif %}
+                </ul>
+            </nav>
+            <div class="position-relative">
+                <div class="badge rounded-pill bg-danger position-absolute cart load_cart">{{ request.session.cart|length }}</div>
+                <a href="{% url 'cart' %}"><img src="{% static 'ECOMMERCE/images/cart.png' %}" width="30px" height="30px"></a>
+            </div>
+      </div>
+</div>

@@ -1,0 +1,26 @@
+{%  load static %}
+{% load products_tags %}
+
+<!-- -------------- testimonial -------------  -->
+<div class="container mt-5 mb-5">
+    <h2 class="title">Customer Reviews</h2>
+    <div class="testimonial">
+        <div class="small-container">
+            <div class="row">
+                {% for review in customer_reviews %}
+                <div class="col-3">
+                    <i class="fa fa-quote-left"></i>
+                    <p>{{ review.review }}</p>
+                    <div class="rating">
+                    {% for i in "x"|rjust:review.rating %}
+                        <li class="fa fa-star"></li>
+                    {% endfor %}
+                </div>
+                    <img src="{{ review.customer_picture.url }}">
+                    <h3>{{ review.customer_name }}</h3>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
