@@ -1,5 +1,11 @@
 # DQSTORE
-Website is fully developed using django for backend; used HTML,CSS,BOOTSTRAP,JAVASCRIPT for frontend. Razorpay Gateway used for payment.
+Fully Dynamic ECOMMERCE website developed using following tools and languages:
+
+Backend    : Django, Python, Sqlite3
+
+Frontend   : HTML, CSS, Bootstrap, Javascript, Ajax
+
+Gateway    : Razorpay
 
 # 🏠Home Page
 <img src="https://github.com/Qasim-Ali-coder/DQSTORE/blob/master/p1.PNG">
@@ -24,6 +30,8 @@ Website is fully developed using django for backend; used HTML,CSS,BOOTSTRAP,JAV
 ### 💳Master Cards: 4111 1111 1111 1111,    5555 5555 5555 4444
 
 ### 💳Visa Cards: 4111 1111 1111 1111,      4012 8888 8888 1881
+
+### CVV : 123
 
 ## 💻 Installation steps
 
